@@ -48,34 +48,34 @@
 
         function platformApp() {
             return {
-                // --- 核心状态 ---
+                // ==================== 核心状态（Core State）====================
                 isLoading: true,
                 loadError: false,
                 view: 'portal', 
                 
-                // --- 数据存储 ---
+                // ==================== 数据存储（Data Storage）====================
                 issueDB: [],
                 companyDB: {},
                 
-                // --- 导航与筛选状态 ---
+                // ==================== 导航与筛选状态（Navigation & Filter）====================
                 currentIssueId: null,
                 currentIssueData: null,
                 currentIndustry: null,
                 currentCorporateCategory: '美妆',
                 
-                // --- 阅读器状态 ---
+                // ==================== 阅读器状态（Reader State）====================
                 activeTab: 'home',
                 subFilter: 'all', 
                 searchQuery: '',
                 selectedNews: null,
                 displayLimit: 30,
                 
-                // --- 全局搜索状态 ---
+                // ==================== 全局搜索状态（Global Search）====================
                 showGlobalSearch: false,
                 globalSearchQuery: '',
                 selectedIndustryNews: null,
 
-                // --- 静态配置 ---
+                // ==================== 静态配置（Static Config）====================
                 sectorConfig: {
                     '宏观': { color: 'text-slate-600', bg: 'bg-slate-50', border: 'border-slate-200', gradient: 'from-slate-700 to-slate-900', icon: 'M13 7h8m0 0v8m0-8l-8 8-4-4-6 6' },
                     '平台': { color: 'text-sky-600', bg: 'bg-sky-50', border: 'border-sky-200', gradient: 'from-sky-600 to-blue-800', icon: 'M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9' },
@@ -101,7 +101,7 @@
                     { id: '美妆', name: '美妆护肤' }, { id: '食品饮料', name: '食品饮料' }, { id: '母婴', name: '母婴亲子' }, { id: '宠物', name: '宠物经济' }
                 ],
 
-                // --- 初始化逻辑 ---
+                // ==================== 初始化逻辑（Initialization）====================
                 async init() {
                     try {
                         const response = await fetch('data.json');
@@ -121,7 +121,7 @@
                     }
                 },
 
-                // --- 计算属性 (Getters) ---
+                // ==================== 计算属性（Getters）==================== (Getters) ---
                 get latestIssue() { return this.issueDB[0] || {}; },
                 get pastIssues() { return this.issueDB.slice(1); },
                 get currentCompanies() { return this.companyDB[this.currentCorporateCategory] || []; },
@@ -179,7 +179,7 @@
                 get filteredNews() { return this.allMatchingNews.slice(0, this.displayLimit); },
                 get hasMore() { return this.displayLimit < this.allMatchingNews.length; },
 
-                // --- 交互方法 ---
+                // ==================== 交互方法（Methods）==================== ---
                 loadMore() { this.displayLimit += 20; },
 
                 formatContent(text) {
@@ -319,7 +319,10 @@
         </div>
     </div>
 
-    <!-- ======================== VIEW 1: 门户首页 ======================== -->
+    <!-- ════════════════════════════════════════════════════════════
+     VIEW 1: 门户首页（Portal Homepage）
+     包含：Hero 区域、行业导航、企业雷达、往期回顾
+     ════════════════════════════════════════════════════════════ -->
     <div x-show="view === 'portal' && !isLoading" x-transition:enter="transition ease-out duration-500 transform" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" class="min-h-screen pb-12">
         <nav class="bg-brand-dark/90 text-white shadow-lg sticky top-0 z-50 backdrop-blur-md border-b border-white/10">
             <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
@@ -417,7 +420,10 @@
         <footer class="text-slate-600 py-8 text-center border-t border-white/5 bg-slate-900"><p class="text-xs">© 2026 杭州乐其电商 · Internal Use Only</p></footer>
     </div>
 
-    <!-- ======================== VIEW 2: 阅读器 ======================== -->
+    <!-- ════════════════════════════════════════════════════════════
+     VIEW 2: 阅读器（Reader View）
+     包含：本期概览、赛道情报、全部资讯、详情弹窗
+     ════════════════════════════════════════════════════════════ -->
     <div id="reader-view" x-show="view === 'reader'" x-cloak class="min-h-screen bg-gray-50">
         <div class="bg-brand-dark text-white sticky top-0 z-40 shadow-md">
             <div class="bg-black/20 text-gray-400 text-[10px] sm:text-xs py-1 text-center font-mono" x-text="'Current Period: ' + currentIssueData?.date"></div>
@@ -545,7 +551,10 @@
         </main>
     </div>
 
-    <!-- ======================== VIEW 3: 行业聚合页 ======================== -->
+    <!-- ════════════════════════════════════════════════════════════
+     VIEW 3: 行业聚合页（Industry Timeline）
+     包含：时间轴、每期洞察、资讯聚合
+     ════════════════════════════════════════════════════════════ -->
     <div x-show="view === 'industry'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-x-10" x-transition:enter-end="opacity-100 translate-x-0" class="min-h-screen bg-slate-50 pb-20" x-cloak>
         <div class="relative bg-slate-900 pb-24 pt-12 overflow-hidden shadow-xl">
              <div :class="`absolute inset-0 bg-gradient-to-br ${sectorConfig[currentIndustry]?.gradient || 'from-gray-800 to-gray-900'} opacity-90`"></div>
@@ -612,7 +621,10 @@
         </div>
     </div>
 
-    <!-- ======================== VIEW 4: 企业雷达页 ======================== -->
+    <!-- ════════════════════════════════════════════════════════════
+     VIEW 4: 企业雷达页（Corporate Radar）
+     包含：行业切换、公司卡片、官网/财报链接
+     ════════════════════════════════════════════════════════════ -->
     <div x-show="view === 'corporate'" x-transition:enter="transition ease-out duration-300" x-transition:enter-start="opacity-0 translate-y-10" x-transition:enter-end="opacity-100 translate-y-0" class="min-h-screen bg-slate-50 pb-20" x-cloak>
         <div class="relative bg-brand-dark text-white pb-24 pt-12 overflow-hidden">
              <div class="absolute inset-0 bg-gradient-to-r from-brand-dark via-brand-primary to-brand-dark opacity-90"></div>
@@ -654,7 +666,9 @@
         </div>
     </div>
 
-    <!-- ======================== GLOBAL SEARCH MODAL ======================== -->
+    <!-- ════════════════════════════════════════════════════════════
+     GLOBAL SEARCH MODAL（全局搜索弹窗）
+     ════════════════════════════════════════════════════════════ -->
     <div x-show="showGlobalSearch" class="fixed inset-0 z-[100] flex justify-center items-start pt-20" x-cloak>
         <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm transition-opacity" @click="showGlobalSearch = false"></div>
         <div class="relative w-full max-w-2xl bg-white rounded-2xl shadow-2xl mx-4 overflow-hidden" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 -translate-y-4" x-transition:enter-end="opacity-100 translate-y-0">

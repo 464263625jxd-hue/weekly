@@ -1,0 +1,44 @@
+# macOS
+.DS_Store
+.AppleDouble
+.LSOverride
+._*
+
+# 临时文件
+*.log
+*.tmp
+*.swp
+*~
+
+# 编辑器
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# 备份文件
+*.backup
+*.bak
+*.old
+
+# 本地测试文件
+test_*.html
+*_debug.html
+
+# 构建产物（如果有）
+dist/
+build/
+
+# 依赖（如果有）
+node_modules/
+
+# 环境配置
+.env
+.env.local
+
+# 日志
+logs/
+*.log
+
+# 系统文件
+Thumbs.db

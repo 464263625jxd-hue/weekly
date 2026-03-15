@@ -120,7 +120,7 @@
                 // ==================== 初始化逻辑（Initialization）====================
                 async init() {
                     try {
-                        const response = await fetch('data.json');
+                        const response = await fetch('data.json?t=' + Date.now());
                         if (!response.ok) throw new Error('网络响应异常');
                         const data = await response.json();
                         
@@ -435,6 +435,66 @@ ${divider}
                 }
             }
         }
+    </script>
+
+    <!-- 版本检测：自动提示用户刷新 -->
+    <script>
+    (function() {
+        let currentVersion = null;
+        let checkInterval = 60000; // 每分钟检查一次
+        
+        async function checkVersion() {
+            try {
+                const response = await fetch('version.json?t=' + Date.now());
+                if (!response.ok) return;
+                const data = await response.json();
+                
+                if (currentVersion === null) {
+                    currentVersion = data.version;
+                } else if (currentVersion !== data.version) {
+                    // 发现新版本，显示提示
+                    showUpdateToast(data.issueId);
+                }
+            } catch (e) {
+                console.log('版本检查失败:', e);
+            }
+        }
+        
+        function showUpdateToast(issueId) {
+            // 创建Toast提示
+            const toast = document.createElement('div');
+            toast.id = 'update-toast';
+            toast.innerHTML = `
+                <div style="position: fixed; top: 20px; left: 50%; transform: translateX(-50%); 
+                            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+                            color: white; padding: 12px 24px; border-radius: 8px; 
+                            box-shadow: 0 4px 20px rgba(0,0,0,0.3); z-index: 99999;
+                            font-size: 14px; display: flex; align-items: center; gap: 12px;">
+                    <span>📰 第${issueId}期已发布</span>
+                    <button onclick="location.reload()" 
+                            style="background: white; color: #667eea; border: none; 
+                                   padding: 6px 16px; border-radius: 4px; cursor: pointer; font-weight: 600;">
+                        立即刷新
+                    </button>
+                    <button onclick="this.parentElement.parentElement.remove()" 
+                            style="background: transparent; color: white; border: 1px solid white; 
+                                   padding: 6px 12px; border-radius: 4px; cursor: pointer;">
+                        稍后
+                    </button>
+                </div>
+            `;
+            document.body.appendChild(toast);
+            
+            // 10秒后自动消失
+            setTimeout(() => toast.remove(), 10000);
+        }
+        
+        // 页面加载后开始检查
+        document.addEventListener('DOMContentLoaded', function() {
+            checkVersion();
+            setInterval(checkVersion, checkInterval);
+        });
+    })();
     </script>
 </head>
 <body x-data="platformApp()" class="antialiased portal-bg">

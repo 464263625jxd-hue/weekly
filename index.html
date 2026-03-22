@@ -130,6 +130,17 @@
                         GLOBAL_ISSUE_DB = this.issueDB; // 供Chart.js使用
                         
                         this.isLoading = false;
+                        
+                        // 添加ESC键关闭弹窗支持
+                        document.addEventListener('keydown', (e) => {
+                            if (e.key === 'Escape' && this.selectedNews) {
+                                this.closeDetail();
+                            }
+                            if (e.key === 'Escape' && this.showGlobalSearch) {
+                                this.showGlobalSearch = false;
+                                document.body.style.overflow = '';
+                            }
+                        });
                     } catch (error) {
                         console.error('数据加载失败:', error);
                         this.loadError = true;
@@ -284,7 +295,12 @@
                 },
 
                 openDetail(item) { this.selectedNews = item; document.body.style.overflow = 'hidden'; },
-                closeDetail() { this.selectedNews = null; document.body.style.overflow = 'auto'; },
+                closeDetail() { 
+                    this.selectedNews = null; 
+                    // 强制恢复滚动，避免卡住
+                    document.body.style.overflow = '';
+                    document.documentElement.style.overflow = '';
+                },
                 
                 // 分享功能：复制完整资讯内容
                 async shareNews(item) {
